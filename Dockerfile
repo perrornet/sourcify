@@ -1,8 +1,10 @@
 FROM node:16 as builder
 
 WORKDIR /app
-COPY package*.json ./
-RUN npm install && npm run server:build
+COPY package*.json .
+RUN npm install
+COPY . .
+RUN npm run server:build
 
 FROM node:16-alpine
 WORKDIR /app
