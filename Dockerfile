@@ -1,21 +1,13 @@
 FROM node:14.20.0-buster as builder
 
 WORKDIR /app
-
-COPY services/core ./services/core
-COPY services/validation ./services/validation
-COPY services/verification ./services/verification
-COPY src ./src
-COPY *.json ./
+COPY package*.json .
 RUN npm install
 COPY . .
-RUN npm run server:build
+RUN npx lerna bootstrap && npx lerna run build
 
 FROM node:16-alpine
 WORKDIR /app
-COPY package* ./
-RUN npm install --production
-COPY --from=builder ./app/public ./public
 COPY --from=builder ./app/dist ./dist
 EXPOSE 8000
-ENTRYPOINT ["npm", "server:start"]
+ENTRYPOINT ["node", "/app/dist/server/server.js"]
