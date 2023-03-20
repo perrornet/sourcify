@@ -66,7 +66,7 @@ jobs:
         if: success() && contains(steps.check-base.outputs.COMMIT_MESSAGE, '[build preview]')
 
         with:
-          status: custom
+          status: ${{ job.status }}
           fields: repo,message,commit,author,action,eventName,ref,workflow,job,took
           text: 'The preview image `docker.io/perrorone/sourcify:${{ steps.short-sha.outputs.sha }}-${{ github.run_number }}` is now available.'
 
