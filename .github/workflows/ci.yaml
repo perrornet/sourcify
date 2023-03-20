@@ -67,6 +67,5 @@ jobs:
           status: ${{ job.status }}
           fields: repo,author,eventName,workflow,ref,commit
           channel: "#翡翠城翡翠城"
-          message:  ${{ steps.short-sha.outputs.sha }}-${{ github.run_number }}
         env:
           SLACK_WEBHOOK_URL: https://hooks.slack.com/services/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
