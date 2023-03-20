@@ -66,6 +66,6 @@ jobs:
         with:
           status: ${{ job.status }}
           fields: repo,author,eventName,workflow,ref,commit
-          channel: "#翡翠城翡翠城"
+          channel: "#random"
         env:
-          SLACK_WEBHOOK_URL: https://hooks.slack.com/services/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
+          SLACK_WEBHOOK_URL: https://hooks.slack.com/services/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
