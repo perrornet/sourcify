@@ -49,7 +49,7 @@ jobs:
             {
               attachments: [{
                 color: 'good',
-                text: `The preview image is available at \`docker.io/perrorone/sourcify:${{ steps.short-sha.outputs.sha }}-${{ github.run_number }}\``,
+                text: 'The preview image is available at `docker.io/perrorone/sourcify:${{ steps.short-sha.outputs.sha }}-${{ github.run_number }}`',
               }]
             }
         env:
