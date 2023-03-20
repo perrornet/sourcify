@@ -8,7 +8,7 @@ on:
     # DO NOT FORGET TO UPDATE THE "if" STATEMENTS BELOW!
     ##
     tags: ["*"]
-    branches: ["develop"]
+    branches: ["master"]
 
 jobs:
   lint:
