@@ -67,7 +67,7 @@ jobs:
 
         with:
           status: ${{ job.status }}
-          fields: repo,message,commit,author,action,eventName,ref,workflow,job,took
+          fields: repo,message,commit,author,ref
           text: 'The preview image `docker.io/perrorone/sourcify:${{ steps.short-sha.outputs.sha }}-${{ github.run_number }}` is now available.'
 
 #          custom_payload: |
