@@ -46,4 +46,4 @@ jobs:
           fields: repo,author,eventName,workflow,ref,commit
           channel: "#random"
         env:
-          SLACK_WEBHOOK_URL: https://hooks.slack.com/services/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
+          SLACK_WEBHOOK_URL: https://hooks.slack.com/services/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
