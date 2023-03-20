@@ -1,36 +1,87 @@
 name: CI
+
 on:
   pull_request:
-    branches: ["master"]
+    branches: ["develop", "master"]
   push:
+    ##
+    # DO NOT FORGET TO UPDATE THE "if" STATEMENTS BELOW!
+    ##
     tags: ["*"]
-    branches: ["master"]
+    branches: ["develop"]
 
 jobs:
-  build-and-deploy:
-    name: Build and Deploy
+  lint:
+    name: Lint
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - name: Docker meta
-        id: meta
-        uses: docker/metadata-action@v4
+      - uses: actions/checkout@v3
         with:
-          images: docker.io/perrorone/sourcify
-          tags: type=sha
-      - name: Login to Docker Hub
-        uses: docker/login-action@v1
+          fetch-depth: 0
+      - name: golangci-lint
+        uses: golangci/golangci-lint-action@v3
+        with:
+          args: --timeout=3m
+      - uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITLEAKS_LICENSE: ${{ secrets.GITLEAKS_LICENSE }}
+  build-test-deploy:
+    name: Build, Test, Deploy
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Check tag base
+        id: check-base
+        env:
+          branch: master
+        run: |
+          EXISTS=$([[ "$(git branch -r --contains ${{ github.sha }})[@]" =~ "$branch" ]] && echo true || echo false)
+          if   [[ '${{ github.event_name }}' == 'push' ]]; then
+            MESSAGE=$(echo $(git log --format=%B -n 1 HEAD))
+          elif [[ '${{ github.event_name }}' == 'pull_request' ]]; then
+            MESSAGE=$(echo $(git log --format=%B -n 1 HEAD^2))
+          fi
+
+          echo "IN_MASTER=$EXISTS" >> $GITHUB_OUTPUT
+          echo "COMMIT_MESSAGE=$MESSAGE" >> $GITHUB_OUTPUT
+          echo "GO_CACHE=$(go env GOCACHE)" >> $GITHUB_OUTPUT
+          echo "GO_MOD_CACHE=$(go env GOMODCACHE)" >> $GITHUB_OUTPUT
+
+          echo "in_master is $EXISTS"
+          echo "commit message is $MESSAGE"
+          echo "github-sha is ${{ github.sha }}"
+          echo "`git branch -l`"
+      - name: Docker login
+        uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{  secrets.DOCKER_PASSWORD }}
 
+      - uses: olegtarasov/get-tag@v2.1.2
+        id: tag-name
 
-      - name: Build and publish
+      - uses: benjlevesque/short-sha@v2.1
+        id: short-sha
+        with:
+          length: 7
+
+      - name: Preview image
         uses: docker/build-push-action@v3
-        if: github.ref == 'refs/heads/master'
         with:
           context: .
-          file: ./src/Dockerfile.server
           push: true
-          tags: ${{ steps.meta.outputs.tags }}-${{ github.run_number }}
+          tags: ${{ steps.short-sha.outputs.sha }}-${{ github.run_number }}
           labels: ${{ steps.meta.outputs.labels }}
+
+      - uses: 8398a7/action-slack@v3
+        with:
+          status: ${{ job.status }}
+          fields: repo,author,eventName,workflow,ref,commit
+          channel: "#翡翠城翡翠城"
+          message:  ${{ steps.short-sha.outputs.sha }}-${{ github.run_number }}
+        env:
+          SLACK_WEBHOOK_URL: https://hooks.slack.com/services/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
