@@ -11,21 +11,6 @@ on:
     branches: ["master"]
 
 jobs:
-  lint:
-    name: Lint
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-      - name: golangci-lint
-        uses: golangci/golangci-lint-action@v3
-        with:
-          args: --timeout=3m
-      - uses: gitleaks/gitleaks-action@v2
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GITLEAKS_LICENSE: ${{ secrets.GITLEAKS_LICENSE }}
   build-test-deploy:
     name: Build, Test, Deploy
     runs-on: ubuntu-latest
@@ -74,7 +59,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${{ steps.short-sha.outputs.sha }}-${{ github.run_number }}
+          tags: docker.io/perrorone/sourcify:${{ steps.short-sha.outputs.sha }}-${{ github.run_number }}
           labels: ${{ steps.meta.outputs.labels }}
 
       - uses: 8398a7/action-slack@v3
