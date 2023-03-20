@@ -43,7 +43,7 @@ jobs:
       - uses: 8398a7/action-slack@v3
         with:
           status: ${{ job.status }}
-          fields: repo,author,eventName,workflow,ref,commit
+#          fields: repo,author,eventName,workflow,ref,commit
           custom_payload: |
             {
               attachments: [{
