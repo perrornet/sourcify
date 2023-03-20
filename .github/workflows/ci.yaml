@@ -73,7 +73,7 @@ jobs:
             {
               attachments: [{
                 color: 'good',
-                text: 'The preview image `docker.io/perrorone/sourcify:${{ steps.short-sha.outputs.sha }}-${{ github.run_number }}` for the "${process.env.message}" committed by @${{process.env.AS_AUTHOR}} is now available.',
+                text: 'The preview image `docker.io/perrorone/sourcify:${{ steps.short-sha.outputs.sha }}-${{ github.run_number }}` for the "${{process.env.message}}" committed by @${{process.env.AS_AUTHOR}} is now available.',
               }]
             }
         env:
