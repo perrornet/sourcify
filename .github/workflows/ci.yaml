@@ -67,12 +67,16 @@ jobs:
 
         with:
           status: custom
-          custom_payload: |
-            {
-              attachments: [{
-                color: 'good',
-                text: 'The preview image `docker.io/perrorone/sourcify:${{ steps.short-sha.outputs.sha }}-${{ github.run_number }}` for the "${{steps.check-base.outputs.COMMIT_MESSAGE}}" committed by @${{ github.event.pull_request.user.login }} is now available.',
-              }]
-            }
+          fields: repo,message,commit,author,action,eventName,ref,workflow,job,took
+          text: |
+            The preview image `docker.io/perrorone/sourcify:${{ steps.short-sha.outputs.sha }}-${{ github.run_number }}` for the "${{steps.check-base.outputs.COMMIT_MESSAGE}}" committed by @${{ github.event.pull_request.user.login }} is now available.
+
+#          custom_payload: |
+#            {
+#              attachments: [{
+#                color: 'good',
+#                text: 'The preview image `docker.io/perrorone/sourcify:${{ steps.short-sha.outputs.sha }}-${{ github.run_number }}` for the "${{steps.check-base.outputs.COMMIT_MESSAGE}}" committed by @${{ github.event.pull_request.user.login }} is now available.',
+#              }]
+#            }
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK }}
