@@ -42,6 +42,7 @@ jobs:
 
       - uses: 8398a7/action-slack@v3
         if: success() && contains(steps.check-base.outputs.COMMIT_MESSAGE, '[build preview]')
+
         with:
           status: custom
           fields: message
